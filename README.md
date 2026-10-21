@@ -12,7 +12,7 @@ Sistem ini dirancang tanpa memerlukan _hosting_ berbayar dengan memanfaatkan **B
 
 ### 1. Banner Utama & Video Profil
 
-![Banner Utama dan Video Profil](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7b38o-3-04-1.png)
+![Banner Utama dan Video Profil]([https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7b38o-3-04-1.png](https://github.com/alpinjolala/v5-aktif/blob/main/Home.png))
 
 > _Menampilkan sambutan, deskripsi singkat prodi, dan pemutar video/playlist YouTube profil prodi._
 
@@ -20,7 +20,7 @@ Sistem ini dirancang tanpa memerlukan _hosting_ berbayar dengan memanfaatkan **B
 
 ### 2. Highlight Karya Terbaru (Slider Auto-Scroll)
 
-![Highlight Karya Terbaru](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7b38o-3-04-2.png)
+![Highlight Karya Terbaru]([https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7b38o-3-04-2.png](https://github.com/alpinjolala/v5-aktif/blob/main/Highlight%20Karya%20Terbaru.png))
 
 > _Kumpulan karya-karya terbaru mahasiswa yang bergerak secara otomatis dari kiri ke kanan (infinite loop)._
 
@@ -28,7 +28,7 @@ Sistem ini dirancang tanpa memerlukan _hosting_ berbayar dengan memanfaatkan **B
 
 ### 3. Eksplorasi Karya (Galeri Publik)
 
-![Eksplorasi Karya Mahasiswa](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7b38o-3-04-3.png)
+![Eksplorasi Karya Mahasiswa](https://github.com/alpinjolala/v5-aktif/blob/main/Eksplorasi%20Karya.png)
 
 > _Galeri karya responsif yang dilengkapi dengan filter kategori dinamis, informasi pembuat, tanggal publikasi, serta link akses langsung._
 
