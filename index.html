@@ -1,0 +1,1553 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Informasi Showcase IPII</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* CSS Wajib untuk Overlay Full Page Blogger */
+      #ipii-app-root {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background-color: #f3f4f6 !important;
+        z-index: 2147483647 !important; /* Z-index maksimal agar menutupi seluruh elemen Blogger */
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow-y: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Animasi Slider Kiri ke Kanan */
+      .slider-container {
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+        padding: 2rem 0;
+        border-radius: 0.5rem;
+      }
+      .slider-track {
+        display: flex;
+        width: max-content;
+        /* Karena bergerak KIRI ke KANAN, kita mulai dari -50% (tengah) menuju 0% */
+        animation: scrollLeftToRight 25s linear infinite;
+      }
+      .slider-track:hover {
+        animation-play-state: paused;
+      }
+      @keyframes scrollLeftToRight {
+        0% {
+          transform: translateX(-50%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      .karya-card {
+        transition: transform 0.3s;
+      }
+      .karya-card:hover {
+        transform: translateY(-5px);
+      }
+
+      /* Scrollbar kustom */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      .hidden-element {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- THUMBNAIL BLOGGER (TERSEMBUNYI) -->
+    <img
+      src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      style="display: none"
+      alt="Thumbnail Postingan Blogger"
+    />
+
+    <!-- ROOT APLIKASI -->
+    <div id="ipii-app-root">
+      <!-- NAVBAR PUBLIK -->
+      <nav id="navbar-public" class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div
+              class="flex items-center cursor-pointer"
+              onclick="switchView('public')"
+            >
+              <i
+                class="fa-solid fa-graduation-cap text-blue-600 text-3xl mr-3"
+              ></i>
+              <span class="font-bold text-xl text-gray-800">IPII Showcase</span>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button
+                onclick="switchView('public')"
+                class="text-gray-600 hover:text-blue-600 font-medium px-3 py-2 rounded-md"
+              >
+                Beranda
+              </button>
+              <button
+                onclick="switchView('login')"
+                class="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"
+              >
+                Login Sistem
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- VIEW: PUBLIC (BERANDA) -->
+      <div
+        id="view-public"
+        class="view-section flex flex-col min-h-[calc(100vh-4rem)]"
+      >
+        <div class="flex-grow">
+          <!-- Hero & Video Profil -->
+          <div class="bg-blue-900 text-white py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                    Selamat Datang di Galeri Karya Mahasiswa IPII
+                  </h1>
+                  <p class="text-blue-200 text-lg mb-6">
+                    Jelajahi inovasi, proyek penelitian, dan dokumentasi
+                    kegiatan terbaik dari mahasiswa Program Studi Ilmu
+                    Perpustakaan dan Informasi Islam UIN Antasari.
+                  </p>
+                </div>
+                <div
+                  class="rounded-xl overflow-hidden shadow-2xl bg-black aspect-video relative"
+                  id="video-container"
+                >
+                  <!-- Iframe Youtube akan dimuat disini oleh JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Highlight Karya (Slider Auto-Scroll Kiri ke Kanan) -->
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h2
+              class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-600 pl-3"
+            >
+              Highlight Karya Terbaru
+            </h2>
+            <div class="slider-container shadow-lg">
+              <div class="slider-track" id="slider-track">
+                <!-- Item slider dimuat oleh JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Galeri Semua Karya -->
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 mb-12">
+            <div class="flex justify-between items-center mb-6">
+              <h2
+                class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-3"
+              >
+                Eksplorasi Karya
+              </h2>
+              <select
+                id="filter-kategori"
+                onchange="renderPublicGallery()"
+                class="border-gray-300 rounded-md shadow-sm p-2 bg-white"
+              >
+                <!-- Dimuat via JS -->
+              </select>
+            </div>
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+              id="gallery-container"
+            >
+              <!-- Galeri dimuat oleh JS -->
+            </div>
+          </div>
+        </div>
+        <!-- Penutup untuk div flex-grow -->
+
+        <footer class="bg-gray-800 text-white py-6 text-center mt-auto w-full">
+          <p>
+            &copy; 2026 Prodi IPII UIN Antasari. Sistem Informasi Showcase Karya
+            Mahasiswa.
+          </p>
+        </footer>
+      </div>
+
+      <!-- VIEW: LOGIN -->
+      <div
+        id="view-login"
+        class="view-section hidden-element h-screen flex items-center justify-center p-4"
+      >
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+          <div class="text-center mb-8">
+            <i class="fa-solid fa-user-lock text-4xl text-blue-600 mb-3"></i>
+            <h2 class="text-2xl font-bold text-gray-800">Login Backoffice</h2>
+            <p class="text-sm text-gray-500 mt-2">
+              Gunakan akun Admin atau Mahasiswa.
+            </p>
+            <div
+              id="login-preview-info"
+              class="mt-3 text-xs bg-yellow-100 text-yellow-800 p-2 rounded hidden-element"
+            >
+              <b>Mode Preview Aktif:</b><br />
+              Admin: admin / dwsp2026<br />
+              Mhs: peserta / dwsp2026
+            </div>
+          </div>
+          <form id="form-login" onsubmit="handleLogin(event)">
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2"
+                >Username / NIM</label
+              >
+              <input
+                type="text"
+                id="login-username"
+                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div class="mb-6">
+              <label class="block text-gray-700 text-sm font-bold mb-2"
+                >Password</label
+              >
+              <input
+                type="password"
+                id="login-password"
+                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              id="btn-login"
+              class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+            >
+              Masuk Sistem
+            </button>
+            <button
+              type="button"
+              onclick="switchView('public')"
+              class="w-full mt-3 bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition"
+            >
+              Kembali ke Beranda
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- VIEW: DASHBOARD ADMIN & MAHASISWA -->
+      <div
+        id="view-dashboard"
+        class="view-section hidden-element flex h-screen bg-gray-100"
+      >
+        <!-- Sidebar -->
+        <aside
+          class="w-64 bg-gray-800 text-white flex flex-col h-full shadow-xl"
+        >
+          <div
+            class="p-6 flex items-center justify-center border-b border-gray-700"
+          >
+            <i
+              class="fa-solid fa-shield-halved text-2xl text-blue-400 mr-2"
+            ></i>
+            <span class="text-xl font-bold" id="sidebar-role">Panel Admin</span>
+          </div>
+          <div class="p-4 border-b border-gray-700">
+            <p class="text-sm text-gray-400">Login sebagai:</p>
+            <p class="font-bold text-white truncate" id="sidebar-name">
+              Nama User
+            </p>
+          </div>
+          <nav class="flex-1 p-4 space-y-2 overflow-y-auto" id="sidebar-nav">
+            <!-- Nav items dinamis berdasarkan role -->
+          </nav>
+          <div class="p-4 border-t border-gray-700">
+            <button
+              onclick="handleLogout()"
+              class="w-full flex items-center justify-center bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
+            >
+              <i class="fa-solid fa-sign-out-alt mr-2"></i> Logout
+            </button>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-8 relative">
+          <!-- Overlay Loading -->
+          <div
+            id="dashboard-loading"
+            class="absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center hidden-element"
+          >
+            <i
+              class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-600 mb-2"
+            ></i>
+            <p class="font-medium">Memproses Data...</p>
+          </div>
+
+          <!-- Sub-view: Dashboard Home (Admin) -->
+          <div id="sub-dashboard-home" class="sub-view hidden-element">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">
+              Ringkasan Sistem
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div
+                class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500"
+              >
+                <h3 class="text-gray-500 text-sm font-bold uppercase">
+                  Total Karya Publik
+                </h3>
+                <p
+                  class="text-3xl font-bold text-gray-800 mt-2"
+                  id="stat-karya"
+                >
+                  0
+                </p>
+              </div>
+              <div
+                class="bg-white p-6 rounded-lg shadow-md border-t-4 border-yellow-500"
+              >
+                <h3 class="text-gray-500 text-sm font-bold uppercase">
+                  Menunggu Validasi
+                </h3>
+                <p
+                  class="text-3xl font-bold text-gray-800 mt-2"
+                  id="stat-pending"
+                >
+                  0
+                </p>
+              </div>
+              <div
+                class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500"
+              >
+                <h3 class="text-gray-500 text-sm font-bold uppercase">
+                  Total Mahasiswa
+                </h3>
+                <p class="text-3xl font-bold text-gray-800 mt-2" id="stat-mhs">
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-view: Kelola Karya (Admin & Mahasiswa) -->
+          <div id="sub-kelola-karya" class="sub-view hidden-element">
+            <div class="flex justify-between items-center mb-6">
+              <h2
+                class="text-3xl font-bold text-gray-800"
+                id="title-kelola-karya"
+              >
+                Kelola Karya
+              </h2>
+              <button
+                onclick="openModalKarya()"
+                class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
+              >
+                <i class="fa-solid fa-plus mr-1"></i> Tambah Karya Baru
+              </button>
+            </div>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Info Karya
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Kategori
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Pembuat
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Status
+                    </th>
+                    <th
+                      class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Aksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="bg-white divide-y divide-gray-200"
+                  id="table-karya-body"
+                >
+                  <!-- Data Tabel Dimuat via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Sub-view: Kelola Pengguna (Admin) -->
+          <div id="sub-kelola-user" class="sub-view hidden-element">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-3xl font-bold text-gray-800">
+                Manajemen Pengguna (Mahasiswa)
+              </h2>
+              <button
+                onclick="openModalUser()"
+                class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition"
+              >
+                <i class="fa-solid fa-user-plus mr-1"></i> Tambah Akun
+              </button>
+            </div>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Nama & NIM
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Username
+                    </th>
+                    <th
+                      class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Aksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="bg-white divide-y divide-gray-200"
+                  id="table-user-body"
+                >
+                  <!-- Data User Dimuat via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Sub-view: Pengaturan (Admin) -->
+          <div id="sub-pengaturan" class="sub-view hidden-element">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">
+              Pengaturan Sistem
+            </h2>
+            <div class="bg-white p-6 rounded-lg shadow-md max-w-2xl">
+              <form id="form-settings" onsubmit="handleSaveSettings(event)">
+                <div class="mb-6">
+                  <label class="block text-gray-700 font-bold mb-2"
+                    >ID Video atau ID Playlist YouTube Profil Prodi</label
+                  >
+                  <div class="flex">
+                    <span
+                      class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm font-bold"
+                    >
+                      ID =
+                    </span>
+                    <input
+                      type="text"
+                      id="setting-yt-id"
+                      class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Cth Video: dQw4w9WgXcQ | Cth Playlist: PLxyz123..."
+                      required
+                    />
+                  </div>
+                  <p class="text-xs text-gray-500 mt-2">
+                    Untuk video tunggal, masukkan teks acak di akhir URL video.
+                    Untuk memutar semua video, masukkan
+                    <b>ID Playlist</b> (biasanya selalu diawali dengan huruf
+                    <b>PL</b>).
+                  </p>
+                </div>
+
+                <div class="mb-6 border-t pt-6">
+                  <label class="block text-gray-700 font-bold mb-2"
+                    >Kelola Kategori Karya</label
+                  >
+                  <div class="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      id="input-new-kategori"
+                      class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Tambah Kategori Baru (Cth: Skripsi)"
+                    />
+                    <button
+                      type="button"
+                      onclick="addKategoriUI()"
+                      class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                    >
+                      Tambah
+                    </button>
+                  </div>
+                  <ul id="list-kategori-ui" class="space-y-2 mt-3">
+                    <!-- List Kategori dimuat via JS -->
+                  </ul>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded hover:bg-blue-700 transition mt-4"
+                >
+                  Simpan Semua Pengaturan
+                </button>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- MODAL: FORM KARYA -->
+      <div
+        id="modal-karya"
+        class="fixed inset-0 bg-black/60 z-[99999999] flex items-center justify-center hidden-element"
+      >
+        <div
+          class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden flex flex-col max-h-[90vh]"
+        >
+          <div
+            class="bg-blue-600 px-6 py-4 flex justify-between items-center text-white"
+          >
+            <h3 class="font-bold text-lg" id="modal-karya-title">Form Karya</h3>
+            <button
+              onclick="closeModal('modal-karya')"
+              class="hover:text-gray-200"
+            >
+              <i class="fa-solid fa-times text-xl"></i>
+            </button>
+          </div>
+          <div class="p-6 overflow-y-auto">
+            <form id="form-karya" onsubmit="handleSaveKarya(event)">
+              <input type="hidden" id="form-karya-id" />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2"
+                    >Judul Karya / Proyek</label
+                  >
+                  <input
+                    type="text"
+                    id="form-karya-judul"
+                    class="w-full px-3 py-2 border rounded focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2"
+                    >Kategori</label
+                  >
+                  <select
+                    id="form-karya-kategori"
+                    class="w-full px-3 py-2 border rounded focus:ring-blue-500"
+                    required
+                  >
+                    <!-- Dimuat via JS -->
+                  </select>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2"
+                  >Deskripsi Singkat</label
+                >
+                <textarea
+                  id="form-karya-desc"
+                  rows="3"
+                  class="w-full px-3 py-2 border rounded focus:ring-blue-500"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2"
+                  >Link Gambar Thumbnail (URL)</label
+                >
+                <input
+                  type="url"
+                  id="form-karya-img"
+                  class="w-full px-3 py-2 border rounded focus:ring-blue-500"
+                  placeholder="https://..."
+                  required
+                />
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2"
+                  >Link Eksternal (Opsional - Repo/PDF)</label
+                >
+                <input
+                  type="url"
+                  id="form-karya-link"
+                  class="w-full px-3 py-2 border rounded focus:ring-blue-500"
+                  placeholder="https://..."
+                />
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2"
+                  >Tanggal Karya / Kegiatan</label
+                >
+                <input
+                  type="date"
+                  id="form-karya-tanggal"
+                  class="w-full px-3 py-2 border rounded focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <!-- Hanya muncul untuk Admin saat validasi -->
+              <div
+                id="form-karya-status-container"
+                class="mb-6 p-4 bg-yellow-50 rounded border border-yellow-200 hidden-element"
+              >
+                <label class="block text-gray-800 text-sm font-bold mb-2"
+                  >Validasi Status (Admin Only)</label
+                >
+                <select
+                  id="form-karya-status"
+                  class="w-full px-3 py-2 border rounded"
+                >
+                  <option value="Pending">Pending (Sembunyikan)</option>
+                  <option value="Approved">
+                    Approved (Tampilkan ke Publik)
+                  </option>
+                </select>
+              </div>
+
+              <div class="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  onclick="closeModal('modal-karya')"
+                  class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold"
+                >
+                  Simpan Karya
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL: FORM USER -->
+      <div
+        id="modal-user"
+        class="fixed inset-0 bg-black/60 z-[99999999] flex items-center justify-center hidden-element"
+      >
+        <div
+          class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+        >
+          <div
+            class="bg-green-600 px-6 py-4 flex justify-between items-center text-white"
+          >
+            <h3 class="font-bold text-lg">Tambah Akun Mahasiswa</h3>
+            <button
+              onclick="closeModal('modal-user')"
+              class="hover:text-gray-200"
+            >
+              <i class="fa-solid fa-times text-xl"></i>
+            </button>
+          </div>
+          <div class="p-6">
+            <form id="form-user" onsubmit="handleSaveUser(event)">
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2"
+                  >Nama Lengkap</label
+                >
+                <input
+                  type="text"
+                  id="form-user-nama"
+                  class="w-full px-3 py-2 border rounded focus:ring-green-500"
+                  required
+                />
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2"
+                  >NIM</label
+                >
+                <input
+                  type="text"
+                  id="form-user-nim"
+                  class="w-full px-3 py-2 border rounded focus:ring-green-500"
+                  required
+                />
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2"
+                  >Username Login</label
+                >
+                <input
+                  type="text"
+                  id="form-user-username"
+                  class="w-full px-3 py-2 border rounded focus:ring-green-500"
+                  required
+                />
+              </div>
+              <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  id="form-user-password"
+                  class="w-full px-3 py-2 border rounded focus:ring-green-500"
+                  required
+                />
+              </div>
+              <div class="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onclick="closeModal('modal-user')"
+                  class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold"
+                >
+                  Simpan Akun
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIKA JAVASCRIPT APLIKASI -->
+    <script>
+      // Sembunyikan scrollbar bawaan Blogger agar tidak bentrok dengan aplikasi
+      document.body.style.overflow = "hidden";
+
+      // =========================================================================
+      // KONFIGURASI APLIKASI Wajib
+      // =========================================================================
+
+      // SAKLAR DEPLOYMENT: Ubah ke false JIKA dipasang di Blogger & terhubung ke GAS
+      const IS_PREVIEW = true;
+
+      // URL Web App GAS (Ganti dengan URL dari hasil deploy Google Apps Script Anda)
+      const GAS_URL = "Masukkan GAS_URL Kalian di sini";
+
+      // =========================================================================
+      // STATE APLIKASI & DATA DUMMY (Untuk Mode Preview)
+      // =========================================================================
+
+      let currentUser = null; // null jika belum login
+      let stateKarya = [];
+      let stateUsers = [];
+      let stateSettings = {
+        YT_PROFILE: "e6oA76XkQzY",
+        KATEGORI_LIST: "Proyek,Makalah,Kegiatan",
+      };
+      let stateKategori = ["Proyek", "Makalah", "Kegiatan"]; // Kategori dinamis
+
+      // Data dummy untuk IS_PREVIEW = true
+      const DUMMY_USERS = [
+        {
+          id: "U01",
+          username: "admin",
+          password: "dwsp2026",
+          role: "Admin",
+          nama: "Administrator",
+          nim: "-",
+        },
+        {
+          id: "U02",
+          username: "peserta",
+          password: "dwsp2026",
+          role: "Mahasiswa",
+          nama: "Ahmad Mahasiswa",
+          nim: "202601001",
+        },
+      ];
+
+      let DUMMY_KARYA = [
+        {
+          id: "K01",
+          nim: "202601001",
+          nama: "Ahmad Mahasiswa",
+          judul: "Aplikasi E-Library Berbasis Web",
+          kategori: "Proyek",
+          desc: "Sistem informasi perpustakaan digital untuk memudahkan pencarian buku secara online.",
+          img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=500&q=80",
+          link: "#",
+          tanggal: "2026-06-01",
+          status: "Approved",
+        },
+        {
+          id: "K02",
+          nim: "202601002",
+          nama: "Siti Nurhaliza",
+          judul: "Analisis Minat Baca di Era Digital",
+          kategori: "Makalah",
+          desc: "Penelitian mendalam mengenai pergeseran tren membaca di kalangan mahasiswa pasca pandemi.",
+          img: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=500&q=80",
+          link: "#",
+          tanggal: "2026-05-15",
+          status: "Approved",
+        },
+        {
+          id: "K03",
+          nim: "202601001",
+          nama: "Ahmad Mahasiswa",
+          judul: "Seminar Nasional Literasi Informasi",
+          kategori: "Kegiatan",
+          desc: "Dokumentasi kegiatan seminar yang diadakan oleh HIMA IPII.",
+          img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=500&q=80",
+          link: "#",
+          tanggal: "2026-06-02",
+          status: "Pending",
+        },
+        {
+          id: "K04",
+          nim: "202601003",
+          nama: "Budi Santoso",
+          judul: "Katalogisasi Arsip Sejarah Lokal",
+          kategori: "Proyek",
+          desc: "Proyek digitalisasi dan pembuatan metadata arsip sejarah Banjarmasin.",
+          img: "https://images.unsplash.com/photo-1461360228754-6e81c478b882?auto=format&fit=crop&w=500&q=80",
+          link: "#",
+          tanggal: "2026-05-20",
+          status: "Approved",
+        },
+      ];
+
+      // =========================================================================
+      // CORE FUNGSI & KOMUNIKASI API
+      // =========================================================================
+
+      // Helper Format Tanggal
+      function formatDisplayDate(dateStr) {
+        if (!dateStr) return "-";
+        try {
+          const d = new Date(dateStr);
+          if (isNaN(d.getTime())) return dateStr;
+          const options = { day: "2-digit", month: "long", year: "numeric" };
+          return d.toLocaleDateString("id-ID", options);
+        } catch (e) {
+          return dateStr;
+        }
+      }
+
+      function formatInputDate(dateStr) {
+        if (!dateStr) return "";
+        try {
+          const d = new Date(dateStr);
+          if (isNaN(d.getTime())) return "";
+          return d.toISOString().split("T")[0];
+        } catch (e) {
+          return "";
+        }
+      }
+
+      window.onload = () => {
+        if (IS_PREVIEW) {
+          document
+            .getElementById("login-preview-info")
+            .classList.remove("hidden-element");
+        }
+        initApp();
+      };
+
+      async function initApp() {
+        // Cek session
+        const savedSession = sessionStorage.getItem("ipii_user");
+        if (savedSession) {
+          currentUser = JSON.parse(savedSession);
+          switchView("dashboard");
+          loadDashboardData();
+        } else {
+          switchView("public");
+          loadPublicData();
+        }
+      }
+
+      // Wrapper Call API (Mendukung Preview & Real GAS Web App)
+      async function apiCall(action, payload = {}) {
+        if (IS_PREVIEW) {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(simulateBackend(action, payload));
+            }, 600); // delay buatan
+          });
+        } else {
+          try {
+            const response = await fetch(GAS_URL, {
+              method: "POST",
+              body: JSON.stringify({ action: action, payload: payload }),
+            });
+            return await response.json();
+          } catch (e) {
+            console.error("API Fetch Error:", e);
+            alert("Gagal terhubung ke server database.");
+            return { success: false, message: "Koneksi Error" };
+          }
+        }
+      }
+
+      // Simulator Backend untuk Canvas
+      function simulateBackend(action, payload) {
+        switch (action) {
+          case "getPublicData":
+            return {
+              success: true,
+              karya: DUMMY_KARYA.filter((k) => k.status === "Approved"),
+              settings: stateSettings,
+            };
+          case "login":
+            const user = DUMMY_USERS.find(
+              (u) =>
+                u.username === payload.username &&
+                u.password === payload.password,
+            );
+            if (user) {
+              const { password, ...safeUser } = user;
+              return { success: true, user: safeUser };
+            }
+            return { success: false, message: "Username atau password salah!" };
+          case "getAdminData":
+            return {
+              success: true,
+              karya: DUMMY_KARYA,
+              users: DUMMY_USERS,
+              settings: stateSettings,
+            };
+          case "getMahasiswaData":
+            return {
+              success: true,
+              karya: DUMMY_KARYA.filter((k) => k.nim === payload.nim),
+            };
+          case "saveKarya":
+            if (payload.id) {
+              // Update
+              const idx = DUMMY_KARYA.findIndex((k) => k.id === payload.id);
+              if (idx > -1)
+                DUMMY_KARYA[idx] = { ...DUMMY_KARYA[idx], ...payload };
+            } else {
+              // Insert
+              payload.id = "K" + Date.now();
+              DUMMY_KARYA.push(payload);
+            }
+            return { success: true };
+          case "deleteKarya":
+            DUMMY_KARYA = DUMMY_KARYA.filter((k) => k.id !== payload.id);
+            return { success: true };
+          case "saveUser":
+            payload.id = "U" + Date.now();
+            payload.role = "Mahasiswa";
+            DUMMY_USERS.push(payload);
+            return { success: true };
+          case "deleteUser":
+            DUMMY_USERS = DUMMY_USERS.filter((u) => u.id !== payload.id);
+            return { success: true };
+          case "saveSettings":
+            stateSettings.YT_PROFILE = payload.yt_id;
+            if (payload.kategori_list !== undefined) {
+              stateSettings.KATEGORI_LIST = payload.kategori_list;
+            }
+            return { success: true };
+          default:
+            return { success: false, message: "Action tidak dikenal" };
+        }
+      }
+
+      // =========================================================================
+      // PENGELOLAAN VIEW (NAVIGASI)
+      // =========================================================================
+
+      function switchView(viewName) {
+        document
+          .querySelectorAll(".view-section")
+          .forEach((el) => el.classList.add("hidden-element"));
+        document
+          .getElementById("navbar-public")
+          .classList.toggle("hidden-element", viewName === "dashboard");
+
+        if (viewName === "public") {
+          document
+            .getElementById("view-public")
+            .classList.remove("hidden-element");
+          if (!currentUser) loadPublicData(); // Reload data publik
+        } else if (viewName === "login") {
+          if (currentUser) {
+            switchView("dashboard");
+          } else {
+            document
+              .getElementById("view-login")
+              .classList.remove("hidden-element");
+          }
+        } else if (viewName === "dashboard") {
+          if (!currentUser) {
+            switchView("login");
+          } else {
+            document
+              .getElementById("view-dashboard")
+              .classList.remove("hidden-element");
+            setupSidebar();
+            loadDashboardData();
+          }
+        }
+      }
+
+      function switchSubView(subViewId) {
+        document
+          .querySelectorAll(".sub-view")
+          .forEach((el) => el.classList.add("hidden-element"));
+        document.getElementById(subViewId).classList.remove("hidden-element");
+      }
+
+      function toggleLoading(show) {
+        const loader = document.getElementById("dashboard-loading");
+        if (show) loader.classList.remove("hidden-element");
+        else loader.classList.add("hidden-element");
+      }
+
+      // =========================================================================
+      // LOGIKA PUBLIK
+      // =========================================================================
+
+      async function loadPublicData() {
+        const res = await apiCall("getPublicData");
+        if (res.success) {
+          stateKarya = res.karya;
+          stateSettings = res.settings;
+
+          if (stateSettings.KATEGORI_LIST) {
+            stateKategori =
+              stateSettings.KATEGORI_LIST.split(",").filter(Boolean);
+          }
+          renderKategoriUI(); // Update Kategori dinamis
+
+          // Set Video Profil (Mendukung Video Tunggal atau Playlist)
+          let ytId = stateSettings.YT_PROFILE || "";
+          let embedUrl = "";
+
+          // Deteksi otomatis: Jika ID diawali dengan "PL", maka formatnya sebagai playlist
+          if (ytId.startsWith("PL") || ytId.startsWith("UU")) {
+            embedUrl = `https://www.youtube.com/embed/videoseries?list=${ytId}`;
+          } else {
+            embedUrl = `https://www.youtube.com/embed/${ytId}`;
+          }
+
+          const videoHtml = `<iframe class="w-full h-full absolute inset-0" src="${embedUrl}" title="Video Profil" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+          document.getElementById("video-container").innerHTML = videoHtml;
+
+          renderSlider();
+          renderPublicGallery();
+        }
+      }
+
+      function renderSlider() {
+        const track = document.getElementById("slider-track");
+        track.innerHTML = "";
+
+        // Ambil 5 karya terbaru
+        const recentKarya = [...stateKarya]
+          .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
+          .slice(0, 5);
+
+        if (recentKarya.length === 0) return;
+
+        // Render 2 kali untuk efek infinite loop seamless Kiri ke Kanan
+        const buildCards = () =>
+          recentKarya
+            .map(
+              (k) => `
+                <div class="karya-card bg-white rounded-lg shadow-md mx-4 w-72 flex-shrink-0 overflow-hidden cursor-pointer" onclick="window.open('${k.link || "#"}', '_blank')">
+                    <img src="${k.img}" alt="${k.judul}" class="w-full h-40 object-cover">
+                    <div class="p-4 whitespace-normal">
+                        <span class="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded">${k.kategori}</span>
+                        <h3 class="font-bold text-gray-800 mt-2 truncate">${k.judul}</h3>
+                        <p class="text-sm text-gray-500 mt-1 truncate">${k.nama}</p>
+                    </div>
+                </div>
+            `,
+            )
+            .join("");
+
+        track.innerHTML = buildCards() + buildCards(); // Gandakan item
+      }
+
+      function renderPublicGallery() {
+        const filter = document.getElementById("filter-kategori").value;
+        const container = document.getElementById("gallery-container");
+        container.innerHTML = "";
+
+        const filtered =
+          filter === "Semua"
+            ? stateKarya
+            : stateKarya.filter((k) => k.kategori === filter);
+
+        if (filtered.length === 0) {
+          container.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10">Belum ada karya untuk kategori ini.</div>`;
+          return;
+        }
+
+        filtered.forEach((k) => {
+          const card = `
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                        <img src="${k.img}" alt="${k.judul}" class="w-full h-48 object-cover">
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-bold">${k.kategori}</span>
+                                <span class="text-xs text-gray-400"><i class="far fa-calendar-alt"></i> ${formatDisplayDate(k.tanggal)}</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">${k.judul}</h3>
+                            <p class="text-gray-600 text-sm flex-1 mb-4">${k.desc}</p>
+                            <div class="border-t pt-4 flex items-center justify-between mt-auto">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold mr-2">
+                                        ${k.nama.charAt(0)}
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">${k.nama}</span>
+                                </div>
+                                ${k.link && k.link !== "#" ? `<a href="${k.link}" target="_blank" class="text-blue-600 hover:text-blue-800" title="Lihat Detail"><i class="fa-solid fa-external-link-alt"></i></a>` : ""}
+                            </div>
+                        </div>
+                    </div>
+                `;
+          container.innerHTML += card;
+        });
+      }
+
+      // =========================================================================
+      // LOGIKA AUTHENTIKASI
+      // =========================================================================
+
+      async function handleLogin(e) {
+        e.preventDefault();
+        const u = document.getElementById("login-username").value;
+        const p = document.getElementById("login-password").value;
+        const btn = document.getElementById("btn-login");
+
+        btn.innerHTML =
+          '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+        btn.disabled = true;
+
+        const res = await apiCall("login", { username: u, password: p });
+
+        if (res.success) {
+          currentUser = res.user;
+          sessionStorage.setItem("ipii_user", JSON.stringify(currentUser));
+          document.getElementById("form-login").reset();
+          switchView("dashboard");
+        } else {
+          alert(res.message);
+        }
+
+        btn.innerHTML = "Masuk Sistem";
+        btn.disabled = false;
+      }
+
+      function handleLogout() {
+        sessionStorage.removeItem("ipii_user");
+        currentUser = null;
+        switchView("public");
+      }
+
+      // =========================================================================
+      // LOGIKA DASHBOARD (ADMIN & MAHASISWA)
+      // =========================================================================
+
+      function setupSidebar() {
+        const role = currentUser.role;
+        document.getElementById("sidebar-role").innerText =
+          role === "Admin" ? "Panel Admin" : "Panel Mahasiswa";
+        document.getElementById("sidebar-name").innerText = currentUser.nama;
+
+        const nav = document.getElementById("sidebar-nav");
+        nav.innerHTML = ""; // Clear
+
+        if (role === "Admin") {
+          nav.innerHTML += `<button onclick="switchSubView('sub-dashboard-home')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-700 focus:bg-gray-700 transition"><i class="fa-solid fa-chart-pie w-6"></i> Dashboard</button>`;
+          nav.innerHTML += `<button onclick="switchSubView('sub-kelola-karya')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-700 focus:bg-gray-700 transition"><i class="fa-solid fa-folder-open w-6"></i> Kelola Karya</button>`;
+          nav.innerHTML += `<button onclick="switchSubView('sub-kelola-user')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-700 focus:bg-gray-700 transition"><i class="fa-solid fa-users w-6"></i> Kelola Pengguna</button>`;
+          nav.innerHTML += `<button onclick="switchSubView('sub-pengaturan')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-700 focus:bg-gray-700 transition"><i class="fa-solid fa-cog w-6"></i> Pengaturan</button>`;
+          switchSubView("sub-dashboard-home");
+        } else {
+          nav.innerHTML += `<button onclick="switchSubView('sub-kelola-karya')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-700 focus:bg-gray-700 transition"><i class="fa-solid fa-book w-6"></i> Karya Saya</button>`;
+          document.getElementById("title-kelola-karya").innerText =
+            "Karya Saya";
+          switchSubView("sub-kelola-karya");
+        }
+      }
+
+      async function loadDashboardData() {
+        toggleLoading(true);
+        if (currentUser.role === "Admin") {
+          const res = await apiCall("getAdminData");
+          if (res.success) {
+            stateKarya = res.karya;
+            stateUsers = res.users;
+            stateSettings = res.settings;
+
+            if (stateSettings.KATEGORI_LIST) {
+              stateKategori =
+                stateSettings.KATEGORI_LIST.split(",").filter(Boolean);
+            }
+            renderKategoriUI(); // Update Kategori dinamis
+
+            // Update Stats Dashboard
+            document.getElementById("stat-karya").innerText = stateKarya.filter(
+              (k) => k.status === "Approved",
+            ).length;
+            document.getElementById("stat-pending").innerText =
+              stateKarya.filter((k) => k.status === "Pending").length;
+            document.getElementById("stat-mhs").innerText = stateUsers.filter(
+              (u) => u.role === "Mahasiswa",
+            ).length;
+
+            document.getElementById("setting-yt-id").value =
+              stateSettings.YT_PROFILE || "";
+
+            renderTableKarya();
+            renderTableUsers();
+          }
+        } else {
+          // Mahasiswa
+          const res = await apiCall("getMahasiswaData", {
+            nim: currentUser.nim,
+          });
+          if (res.success) {
+            stateKarya = res.karya;
+            renderTableKarya();
+          }
+        }
+        toggleLoading(false);
+      }
+
+      function renderTableKarya() {
+        const tbody = document.getElementById("table-karya-body");
+        tbody.innerHTML = "";
+
+        if (stateKarya.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data karya.</td></tr>`;
+          return;
+        }
+
+        stateKarya.forEach((k) => {
+          let statusBadge =
+            k.status === "Approved"
+              ? `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Tampil</span>`
+              : `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>`;
+
+          let aksiBtn = `
+                    <button onclick='editKarya(${JSON.stringify(k).replace(/'/g, "&#39;")})' class="text-blue-600 hover:text-blue-900 mx-1"><i class="fa-solid fa-edit"></i></button>
+                    <button onclick="hapusKarya('${k.id}')" class="text-red-600 hover:text-red-900 mx-1"><i class="fa-solid fa-trash"></i></button>
+                `;
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-md object-cover" src="${k.img}" alt="">
+                            </div>
+                            <div class="ml-4 max-w-[200px]">
+                                <div class="text-sm font-medium text-gray-900 truncate" title="${k.judul}">${k.judul}</div>
+                                <div class="text-sm text-gray-500">${formatDisplayDate(k.tanggal)}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${k.kategori}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${k.nama}</div>
+                        <div class="text-sm text-gray-500">${k.nim}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">${aksiBtn}</td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderTableUsers() {
+        const tbody = document.getElementById("table-user-body");
+        tbody.innerHTML = "";
+        const mhsOnly = stateUsers.filter((u) => u.role === "Mahasiswa");
+
+        if (mhsOnly.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Belum ada akun mahasiswa.</td></tr>`;
+          return;
+        }
+
+        mhsOnly.forEach((u) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${u.nama}</div>
+                        <div class="text-sm text-gray-500">${u.nim}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">${u.username}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <button onclick="hapusUser('${u.id}')" class="text-red-600 hover:text-red-900"><i class="fa-solid fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // =========================================================================
+      // CRUD ACTIONS & SETTINGS
+      // =========================================================================
+
+      function renderKategoriUI() {
+        // Update UI List Pengaturan Admin
+        const listUI = document.getElementById("list-kategori-ui");
+        if (listUI) {
+          listUI.innerHTML = "";
+          stateKategori.forEach((kat, idx) => {
+            listUI.innerHTML += `
+                        <li class="flex justify-between items-center bg-gray-50 p-2 border border-gray-200 rounded">
+                            <span class="text-gray-800 font-medium">${kat}</span>
+                            <button type="button" onclick="hapusKategoriUI(${idx})" class="text-red-500 hover:text-red-700 bg-red-100 p-1 rounded px-2"><i class="fa-solid fa-trash-alt text-sm"></i></button>
+                        </li>
+                    `;
+          });
+        }
+
+        // Update Dropdown Public Filter
+        const filterSelect = document.getElementById("filter-kategori");
+        if (filterSelect) {
+          filterSelect.innerHTML =
+            '<option value="Semua">Semua Kategori</option>' +
+            stateKategori
+              .map((k) => `<option value="${k}">${k}</option>`)
+              .join("");
+        }
+
+        // Update Dropdown Form Karya
+        const formSelect = document.getElementById("form-karya-kategori");
+        if (formSelect) {
+          formSelect.innerHTML = stateKategori
+            .map((k) => `<option value="${k}">${k}</option>`)
+            .join("");
+        }
+      }
+
+      function addKategoriUI() {
+        const input = document.getElementById("input-new-kategori");
+        const val = input.value.trim();
+        if (val && !stateKategori.includes(val)) {
+          stateKategori.push(val);
+          input.value = "";
+          renderKategoriUI();
+        } else if (stateKategori.includes(val)) {
+          alert("Kategori ini sudah ada!");
+        }
+      }
+
+      function hapusKategoriUI(idx) {
+        stateKategori.splice(idx, 1);
+        renderKategoriUI();
+      }
+
+      // MODAL HANDLERS
+      function closeModal(id) {
+        document.getElementById(id).classList.add("hidden-element");
+      }
+
+      function openModalKarya() {
+        document.getElementById("form-karya").reset();
+        document.getElementById("form-karya-id").value = "";
+        document.getElementById("modal-karya-title").innerText =
+          "Tambah Karya Baru";
+
+        // Set default tanggal hari ini
+        document.getElementById("form-karya-tanggal").value = new Date()
+          .toISOString()
+          .split("T")[0];
+
+        // Atur visibilitas status
+        if (currentUser.role === "Admin") {
+          document
+            .getElementById("form-karya-status-container")
+            .classList.remove("hidden-element");
+          document.getElementById("form-karya-status").value = "Approved"; // Default admin
+        } else {
+          document
+            .getElementById("form-karya-status-container")
+            .classList.add("hidden-element");
+        }
+
+        document
+          .getElementById("modal-karya")
+          .classList.remove("hidden-element");
+      }
+
+      function editKarya(k) {
+        document.getElementById("form-karya-id").value = k.id;
+        document.getElementById("form-karya-judul").value = k.judul;
+        document.getElementById("form-karya-kategori").value = k.kategori;
+        document.getElementById("form-karya-desc").value = k.desc;
+        document.getElementById("form-karya-img").value = k.img;
+        document.getElementById("form-karya-link").value = k.link || "";
+        document.getElementById("form-karya-tanggal").value = formatInputDate(
+          k.tanggal,
+        );
+        document.getElementById("modal-karya-title").innerText = "Edit Karya";
+
+        if (currentUser.role === "Admin") {
+          document
+            .getElementById("form-karya-status-container")
+            .classList.remove("hidden-element");
+          document.getElementById("form-karya-status").value = k.status;
+        }
+
+        document
+          .getElementById("modal-karya")
+          .classList.remove("hidden-element");
+      }
+
+      function openModalUser() {
+        document.getElementById("form-user").reset();
+        document
+          .getElementById("modal-user")
+          .classList.remove("hidden-element");
+      }
+
+      // SUBMIT HANDLERS
+      async function handleSaveKarya(e) {
+        e.preventDefault();
+        toggleLoading(true);
+
+        const payload = {
+          id: document.getElementById("form-karya-id").value,
+          judul: document.getElementById("form-karya-judul").value,
+          kategori: document.getElementById("form-karya-kategori").value,
+          desc: document.getElementById("form-karya-desc").value,
+          img: document.getElementById("form-karya-img").value,
+          link: document.getElementById("form-karya-link").value,
+          tanggal: document.getElementById("form-karya-tanggal").value,
+        };
+
+        // Inject Ownership jika insert baru
+        if (!payload.id) {
+          payload.nim = currentUser.nim;
+          payload.nama = currentUser.nama;
+          // Jika Mhs yg upload, status pending. Admin auto approved.
+          payload.status =
+            currentUser.role === "Admin" ? "Approved" : "Pending";
+        } else {
+          // Pertahankan info asal jika edit
+          const old = stateKarya.find((k) => k.id === payload.id);
+          payload.nim = old.nim;
+          payload.nama = old.nama;
+          payload.status = old.status;
+        }
+
+        // Override status jika Admin sedang validasi di form
+        if (currentUser.role === "Admin") {
+          payload.status = document.getElementById("form-karya-status").value;
+        }
+
+        const res = await apiCall("saveKarya", payload);
+        if (res.success) {
+          closeModal("modal-karya");
+          loadDashboardData();
+        } else {
+          alert("Gagal menyimpan data.");
+        }
+        toggleLoading(false);
+      }
+
+      async function hapusKarya(id) {
+        if (confirm("Yakin ingin menghapus karya ini?")) {
+          toggleLoading(true);
+          const res = await apiCall("deleteKarya", { id: id });
+          if (res.success) loadDashboardData();
+          else {
+            toggleLoading(false);
+            alert("Gagal menghapus.");
+          }
+        }
+      }
+
+      async function handleSaveUser(e) {
+        e.preventDefault();
+        toggleLoading(true);
+        const payload = {
+          nama: document.getElementById("form-user-nama").value,
+          nim: document.getElementById("form-user-nim").value,
+          username: document.getElementById("form-user-username").value,
+          password: document.getElementById("form-user-password").value,
+        };
+        const res = await apiCall("saveUser", payload);
+        if (res.success) {
+          closeModal("modal-user");
+          loadDashboardData();
+        } else {
+          alert("Gagal menyimpan akun.");
+        }
+        toggleLoading(false);
+      }
+
+      async function hapusUser(id) {
+        if (
+          confirm(
+            "Yakin hapus akun mahasiswa ini? Semua datanya akan hilang aksesnya.",
+          )
+        ) {
+          toggleLoading(true);
+          const res = await apiCall("deleteUser", { id: id });
+          if (res.success) loadDashboardData();
+          else {
+            toggleLoading(false);
+            alert("Gagal menghapus.");
+          }
+        }
+      }
+
+      async function handleSaveSettings(e) {
+        e.preventDefault();
+        toggleLoading(true);
+        const ytId = document.getElementById("setting-yt-id").value;
+        const katStr = stateKategori.join(","); // Gabungkan kembali jadi string
+
+        const res = await apiCall("saveSettings", {
+          yt_id: ytId,
+          kategori_list: katStr,
+        });
+        if (res.success) {
+          alert("Pengaturan dan Kategori Berhasil Disimpan!");
+          loadDashboardData();
+        } else {
+          alert("Gagal menyimpan pengaturan.");
+        }
+        toggleLoading(false);
+      }
+    </script>
+  </body>
+</html>
